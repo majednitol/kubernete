@@ -18,6 +18,16 @@ spec:
           ports:
             - containerPort: 3000
           env:
+          # - name: DB_NAME       // you can use config file
+          #   valueFrom:
+          #     configMapKeyRef:
+          #       name: postgre-config
+          #       key: DB_NAME
+          # - name: DB_PORT
+          #   valueFrom:
+          #     configMapKeyRef:
+          #       name: postgre-config
+          #       key: DB_PORT
             - name: DB_NAME
               value: "yourDatabaseName"
             - name: DB_USER_NAME
