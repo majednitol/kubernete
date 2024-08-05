@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-postgresql-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-app
+  template:
+    metadata:
+      labels:
+        app: postgresql-app
+    spec:
+      containers:
+      - name: postgres-db
+        image: postgres:latest
+        volumeMounts:
+        - mountPath: /data/db
+          name: postgre-vol
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: "yourDatabaseName"
+        - name: POSTGRES_USER
+          value: "yourUsername"
+        - name: POSTGRES_PASSWORD
+          value: "yourPassword"
+      volumes:
+      - name: postgre-vol
+        persistentVolumeClaim:
+          claimName: host-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-postgresql-app
+spec:
+  ports:
+  - name: tcp
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: postgresql-app

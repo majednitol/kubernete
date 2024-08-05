@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-expressdb-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: expressdb-app
+  template:
+    metadata:
+      labels:
+        app: expressdb-app
+    spec:
+      containers:
+        - name: expressdb-app
+          image: majedur2377/webapp:14
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_NAME
+              value: "yourDatabaseName"
+            - name: DB_USER_NAME
+              value: "yourUsername"
+            - name: DB_USER_PASSWORD
+              value: "yourPassword"
+            - name: DB_HOST
+              value: "service-postgresql-app"
+            - name: DB_PORT
+              value: "5432"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-express-app
+spec:
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 3000
+  selector:
+    app: expressdb-app
+  type: LoadBalancer

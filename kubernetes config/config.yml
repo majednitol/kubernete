@@ -1,0 +1,10 @@
+apiVersion : v1
+kind : ConfigMap
+metadata :
+  name : postgre-config
+data :
+  DB_NAME: "yourDatabaseName"
+  DB_USER_NAME : "yourUsername"
+  DB_USER_PASSWORD : "yourPassword"
+  DB_HOST : "postgres-db"
+  DB_PORT : "5432"

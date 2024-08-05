@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Unique key of the Deployment instance
+  name: my-expressdb-app
+spec:
+  # 3 Pods should exist at all times.
+  replicas: 2
+  selector:
+    matchLabels:
+      app: expressdb-app
+  template:
+    metadata:
+      labels:
+        # Apply this label to pods and default
+        # the Deployment label selector to this value
+        app: expressdb-app
+    spec:
+      containers:
+      - name: expressdb-app
+        # Run this image
+        image: majedur2377/webapp:13
+        ports:
+        - containerPort: 3000
+      - name: postgres-db
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: DB_NAME
+          value: "yourDatabaseName"
+        - name: DB_USER_NAME
+          value: "yourUsername"
+        - name: DB_USER_PASSWORD
+          value: "yourPassword"
+        - name: DB_HOST
+          value: 'localhost'
+        - name: DB_PORT
+          value: 5432
+
+---
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  # Unique key of the Service instance
+  name: service-expressdb-app
+spec:
+  ports:
+    # Accept traffic sent to port 80
+    - name: http
+      port: 8000
+      targetPort: 3000
+  selector:
+    # Loadbalance traffic across Pods matching
+    # this label selector
+    app: expressdb-app  # need to same deploymentfile  templete label name
+  # Create an HA proxy in the cloud provider
+  # with an External IP address - *Only supported
+  # by some cloud providers*
+  type: LoadBalancer
